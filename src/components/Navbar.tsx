@@ -30,7 +30,7 @@ export default function Navbar() {
       </div>
       <div className="navbar-end">
         <Link href="/logout" legacyBehavior>
-          <a className="btn btn-primary">Logout</a>
+          <a className="btn btn-info">Login</a>
         </Link>
       </div>
     </div>

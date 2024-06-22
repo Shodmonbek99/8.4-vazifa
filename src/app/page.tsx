@@ -1,55 +1,68 @@
-// src/app/page.tsx
+import Link from "next/link";
+import {
+  Key,
+  ReactElement,
+  JSXElementConstructor,
+  ReactNode,
+  AwaitedReactNode,
+  ReactPortal,
+} from "react";
 
-import React from 'react';
-
-// Product type definition
-type Product = {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  thumbnail: string;
-};
-
-// Function to fetch data
 const request = async (url: string) => {
   const req = await fetch(url);
   const data = await req.json();
   return data;
 };
 
-// Card component
-const Card: React.FC<Product> = ({ title, description, price, thumbnail }) => {
-  return (
-    <div className="border rounded-lg shadow-md p-4 m-4">
-      <img src={thumbnail} alt={title} className="w-full h-48 object-cover rounded-t-lg" />
-      <h2 className="text-xl font-bold mt-4">{title}</h2>
-      <p className="text-gray-700">{description}</p>
-      <p className="text-gray-900 font-semibold">${price}</p>
-    </div>
-  );
-};
-
-// Server component to fetch data and render
-const Home = async () => {
-  const data = await request('https://dummyjson.com/products');
+async function Home() {
+  const data = await request("https://dummyjson.com/products");
 
   return (
-    <div>
-      <h1 className="text-3xl mb-8">Home</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data.products.map((product: Product) => (
-          <Card
-            key={product.id}
-            title={product.title}
-            description={product.description}
-            price={product.price}
-            thumbnail={product.thumbnail}
-          />
-        ))}
+    <div className="container mx-auto px-4">
+      <h1 className="text-3xl font-bold text-center my-8">Products</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {data.products.map(
+          (item: {
+            id: Key | null | undefined;
+            thumbnail: string | undefined;
+            title:
+              | string
+              | number
+              | bigint
+              | boolean
+              | ReactElement<any, string | JSXElementConstructor<any>>
+              | Iterable<ReactNode>
+              | Promise<AwaitedReactNode>
+              | null
+              | undefined;
+            price:
+              | string
+              | number
+              | bigint
+              | boolean
+              | ReactElement<any, string | JSXElementConstructor<any>>
+              | Iterable<ReactNode>
+              | ReactPortal
+              | Promise<AwaitedReactNode>
+              | null
+              | undefined;
+          }) => (
+            <Link key={item.id} href={`./product/${item.id}`} legacyBehavior>
+              <a className="card bg-base-100 shadow-lg hover:shadow-xl transition duration-300">
+                <figure className="px-10 pt-10">
+                  <img src={item.thumbnail} className="rounded-xl" />
+                </figure>
+                <div className="card-body items-center text-center">
+                  <h1 className="card-title  font-extrabold  ">{item.title}</h1>
+                  <p className="text-gray-600">${item.price}</p>
+                </div>
+              </a>
+            </Link>
+          )
+        )}
       </div>
     </div>
   );
-};
+}
 
 export default Home;
